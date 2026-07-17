@@ -1,0 +1,12 @@
+# Local development configuration
+/.agents/
+/.codex/
+/.paseo/
+/.claude/
+/.cursor/
+/.mcp.json
+/AGENTS.md
+/CLAUDE.md
+/GEMINI.md
+/docs/ai-workflow.md
+/.github/copilot-instructions.md
