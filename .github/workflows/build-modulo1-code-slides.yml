@@ -30,18 +30,36 @@ jobs:
         run: |
           node <<'NODE'
           const fs = require('fs');
+          const path = require('path');
           const base = 'materiali/slides/01-architettura-react';
-          let source = '';
+          const parts = [
+            'generator.part-00',
+            'generator.part-01',
+            'generator.part-02',
+            'generator.part-03.js',
+            'generator.part-04.js',
+            'generator.part-05.js',
+            'generator.part-06.js',
+            'generator.part-07.js',
+            'generator.part-08.js',
+          ];
 
-          for (let index = 0; index <= 2; index += 1) {
-            source += fs.readFileSync(`${base}/generator.part-0${index}`, 'utf8');
-          }
+          const source = parts.map((part) => {
+            const partPath = path.join(base, part);
 
-          for (let index = 3; index <= 8; index += 1) {
-            source += require(`./${base}/generator.part-0${index}.js`);
-          }
+            if (!fs.existsSync(partPath)) {
+              throw new Error(`Missing generator fragment: ${partPath}`);
+            }
 
-          fs.writeFileSync(`${base}/.generate_modulo1_code_deck.js`, source);
+            console.log(`Appending ${partPath}`);
+            return fs.readFileSync(partPath, 'utf8');
+          }).join('');
+
+          fs.writeFileSync(
+            path.join(base, '.generate_modulo1_code_deck.js'),
+            source,
+            'utf8'
+          );
           NODE
 
       - name: Generate PowerPoint
@@ -63,5 +81,3 @@ jobs:
           fi
           git commit -m 'Build Module 1 commented code slides'
           git push
-
-# Trigger the first generated build after installing the workflow.
