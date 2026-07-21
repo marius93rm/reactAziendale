@@ -32,10 +32,14 @@ jobs:
           const fs = require('fs');
           const path = require('path');
           const base = 'materiali/slides/01-architettura-react';
-          const parts = [
+
+          const rawParts = [
             'generator.part-00',
             'generator.part-01',
             'generator.part-02',
+          ];
+
+          const wrappedParts = [
             'generator.part-03.js',
             'generator.part-04.js',
             'generator.part-05.js',
@@ -44,8 +48,8 @@ jobs:
             'generator.part-08.js',
           ];
 
-          const source = parts.map((part) => {
-            const partPath = path.join(base, part);
+          function readPart(fileName) {
+            const partPath = path.join(base, fileName);
 
             if (!fs.existsSync(partPath)) {
               throw new Error(`Missing generator fragment: ${partPath}`);
@@ -53,20 +57,45 @@ jobs:
 
             console.log(`Appending ${partPath}`);
             return fs.readFileSync(partPath, 'utf8');
-          }).join('');
+          }
 
-          fs.writeFileSync(
-            path.join(base, '.generate_modulo1_code_deck.js'),
-            source,
-            'utf8'
-          );
+          function decodeWrappedPart(fileName) {
+            const raw = readPart(fileName).replace(/\r\n/g, '\n').trimEnd();
+            const prefix = 'module.exports = "';
+            const suffix = '";';
+
+            if (!raw.startsWith(prefix) || !raw.endsWith(suffix)) {
+              throw new Error(`Invalid wrapped generator fragment: ${fileName}`);
+            }
+
+            const body = raw.slice(prefix.length, -suffix.length);
+
+            // The fragments were stored as quoted JavaScript strings, but contain
+            // physical newlines. Escape only those physical newlines, then let
+            // JSON.parse decode the original escaped quotes and backslashes.
+            const validJsonString = `"${body.replace(/\n/g, '\\n')}"`;
+            return JSON.parse(validJsonString);
+          }
+
+          const source = [
+            ...rawParts.map(readPart),
+            ...wrappedParts.map(decodeWrappedPart),
+          ].join('');
+
+          const output = path.join(base, '.generate_modulo1_code_deck.js');
+          fs.writeFileSync(output, source, 'utf8');
+          console.log(`Generator rebuilt at ${output} (${source.length} characters)`);
           NODE
+
+      - name: Validate generator syntax
+        run: node --check materiali/slides/01-architettura-react/.generate_modulo1_code_deck.js
 
       - name: Generate PowerPoint
         shell: bash
         run: |
           OUTPUT_PATH=materiali/slides/01-architettura-react/Modulo_1_Esempi_Commentati_Codice.pptx \
             node materiali/slides/01-architettura-react/.generate_modulo1_code_deck.js
+          test -s materiali/slides/01-architettura-react/Modulo_1_Esempi_Commentati_Codice.pptx
           rm materiali/slides/01-architettura-react/.generate_modulo1_code_deck.js
 
       - name: Commit generated presentation
