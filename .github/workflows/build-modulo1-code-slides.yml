@@ -1,0 +1,65 @@
+name: Build Module 1 commented code slides
+
+on:
+  push:
+    paths:
+      - 'materiali/slides/01-architettura-react/generator.part-*'
+      - '.github/workflows/build-modulo1-code-slides.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install presentation generator
+        run: npm install --no-save --package-lock=false pptxgenjs@4.0.0
+
+      - name: Rebuild generator source
+        shell: bash
+        run: |
+          node <<'NODE'
+          const fs = require('fs');
+          const base = 'materiali/slides/01-architettura-react';
+          let source = '';
+
+          for (let index = 0; index <= 2; index += 1) {
+            source += fs.readFileSync(`${base}/generator.part-0${index}`, 'utf8');
+          }
+
+          for (let index = 3; index <= 8; index += 1) {
+            source += require(`./${base}/generator.part-0${index}.js`);
+          }
+
+          fs.writeFileSync(`${base}/.generate_modulo1_code_deck.js`, source);
+          NODE
+
+      - name: Generate PowerPoint
+        shell: bash
+        run: |
+          OUTPUT_PATH=materiali/slides/01-architettura-react/Modulo_1_Esempi_Commentati_Codice.pptx \
+            node materiali/slides/01-architettura-react/.generate_modulo1_code_deck.js
+          rm materiali/slides/01-architettura-react/.generate_modulo1_code_deck.js
+
+      - name: Commit generated presentation
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add materiali/slides/01-architettura-react/Modulo_1_Esempi_Commentati_Codice.pptx
+          if git diff --cached --quiet; then
+            echo 'Presentation is already up to date.'
+            exit 0
+          fi
+          git commit -m 'Build Module 1 commented code slides'
+          git push

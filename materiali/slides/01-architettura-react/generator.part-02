@@ -1,0 +1,76 @@
+orta solo ciò che serve.', 'Gli helper interni restano privati.'],
+  notes: 'index.ts non deve diventare un barrel che esporta tutto. Il confine pubblico dovrebbe essere piccolo: componente e tipi necessari al chiamante. Gli helper di mapping o le costanti interne non devono uscire dalla cartella. I barrel annidati possono nascondere cicli, quindi vanno usati con disciplina.'
+});
+
+codeSlide({
+  title: 'index.ts definisce l’API pubblica della cartella', eyebrow: 'Public boundary', lang: 'TS', filename: 'TicketList/index.ts',
+  code: `// Espone il componente principale.\nexport { TicketList } from './TicketList';\n\n// Espone solo il tipo necessario al chiamante.\nexport type { TicketListProps }\n  from './TicketList.types';\n\n// NON esportare formatter e costanti interne.\n// export * from './internal'; // evita`,
+  bullets: ['Il chiamante vede un contratto piccolo.', 'Gli interni possono cambiare liberamente.', 'Gli import raccontano il confine.'],
+  notes: 'Mostrare come l’import diventa import { TicketList } from feature/TicketList. Il chiamante non deve conoscere il percorso dei file interni. Tuttavia evitare export * indiscriminati. Un’API pubblica troppo larga crea dipendenze accidentali e rende più difficile riorganizzare la cartella.'
+});
+
+compareSlide({
+  title: 'Le dipendenze devono rispettare la direzione', eyebrow: 'Import boundaries', lang: 'TS',
+  leftCode: `// shared/Button.tsx\n// Errore: shared conosce una feature.\nimport { TicketStatus }\n  from '../../features/Dashboard';\n\nexport function Button() {\n  // ...\n}`,
+  rightCode: `// features/Dashboard/TicketAction.tsx\n// Corretto: la feature usa shared.\nimport { Button }\n  from '../../shared/components';\n\nexport function TicketAction() {\n  return <Button>Apri</Button>;\n}`,
+  footer: 'app → features → shared → platform',
+  notes: 'Shared deve essere stabile e indipendente dalle feature. Se Button importa TicketStatus, non è più una primitiva condivisa. La feature può usare Button, non il contrario. Nei progetti grandi questa regola può essere automatizzata con ESLint boundaries o path aliases, ma la prima difesa resta una code review sugli import.'
+});
+
+compareSlide({
+  title: 'Shared nasce dal secondo uso compatibile', eyebrow: 'Astrazione progressiva', lang: 'TSX',
+  leftCode: `// Primo uso: resta nella feature.\nfunction TicketStatusBadge({ status }) {\n  return <span>{status}</span>;\n}\n\n// Non prevedere dieci varianti future.`,
+  rightCode: `// Secondo uso compatibile: estrai.\nexport function StatusBadge({\n  label, tone\n}: StatusBadgeProps) {\n  return (\n    <span data-tone={tone}>{label}</span>\n  );\n}`,
+  footer: 'Riuso provato, non riuso immaginato.',
+  notes: 'Al primo uso conosciamo soltanto i requisiti di TicketStatusBadge. Estrarre subito un componente generico porta spesso a props come variant, compact, icon, uppercase e altre combinazioni speculative. Quando compare un secondo uso realmente compatibile, possiamo individuare il contratto comune e promuovere il componente in shared.'
+});
+
+conceptSlide({
+  title: 'Il service layer conosce HTTP, non la UI', eyebrow: 'Accesso ai dati',
+  definition: 'Il service traduce endpoint, headers e payload in un contratto usabile dalla feature.',
+  example: 'Component → custom hook → service → API',
+  bullets: ['La UI non costruisce URL.', 'Il hook gestisce lifecycle e stato.', 'Il service mappa i dati esterni.'],
+  notes: 'Separare responsabilità. Il componente visualizza e gestisce eventi. Il custom hook collega dati e lifecycle React. Il service conosce HTTP e mapping. Questa separazione non richiede una classe o una repository astratta. Anche una funzione fetchTickets ben posizionata è sufficiente.'
+});
+
+codeSlide({
+  title: 'Il service restituisce dati tipizzati e normalizzati', eyebrow: 'Service layer', lang: 'TS', filename: 'services/ticketsApi.ts',
+  code: `export async function fetchTickets(\n  query: string,\n  signal?: AbortSignal\n): Promise<Ticket[]> {\n  const params = new URLSearchParams({ q: query });\n\n  const response = await fetch(\n    '/api/tickets?' + params.toString(),\n    { signal }\n  );\n\n  if (!response.ok) throw new Error('Fetch failed');\n\n  const dto: TicketDto[] = await response.json();\n  return dto.map(mapTicketDto); // confine API → dominio\n}`,
+  bullets: ['Endpoint e mapping restano fuori dalla UI.', 'AbortSignal entra come dipendenza esplicita.', 'Gli errori HTTP diventano eccezioni coerenti.'],
+  notes: 'Il service riceve query e signal. Non gestisce useState o useEffect, quindi può essere testato come funzione asincrona. Il mapping finale separa la forma del backend dal modello usato dal frontend. Se il backend rinomina created_at, la correzione resta nel mapper invece di propagarsi nei componenti.'
+});
+
+compareSlide({
+  title: 'Prima: pagina, rete e rendering sono fusi', eyebrow: 'Container / presentational', lang: 'TSX',
+  leftCode: `function TicketsPage() {\n  const [tickets, setTickets] = useState([]);\n\n  useEffect(() => {\n    fetch('/api/tickets')\n      .then(r => r.json())\n      .then(setTickets);\n  }, []);\n\n  return tickets.map(ticket => (\n    <article key={ticket.id}>\n      <h2>{ticket.title}</h2>\n    </article>\n  ));\n}`,
+  rightCode: `function TicketsPage() {\n  const result = useTickets();\n\n  return (\n    <TicketList\n      tickets={result.tickets}\n      isLoading={result.isLoading}\n      error={result.error}\n    />\n  );\n}`,
+  footer: 'La pagina orchestra; il hook sincronizza; la view renderizza.',
+  notes: 'Il lato sinistro non è sempre sbagliato, ma accumula tre ragioni di modifica: endpoint, lifecycle e markup. Nel lato destro la pagina legge come un indice. useTickets gestisce la sincronizzazione e TicketList riceve un contratto esplicito. Il test della view non ha bisogno della rete.'
+});
+
+codeSlide({
+  title: 'La view riceve dati e callback, non sistemi esterni', eyebrow: 'Presentational component', lang: 'TSX', filename: 'TicketList/TicketList.tsx',
+  code: `type Props = {\n  tickets: Ticket[];\n  isLoading: boolean;\n  error: Error | null;\n  onSelect: (id: string) => void;\n};\n\nexport function TicketList(props: Props) {\n  if (props.isLoading) return <Spinner />;\n  if (props.error) return <ErrorBanner />;\n  if (props.tickets.length === 0) return <EmptyState />;\n\n  return props.tickets.map(ticket => (\n    <TicketRow\n      key={ticket.id}\n      ticket={ticket}\n      onSelect={props.onSelect}\n    />\n  ));\n}`,
+  bullets: ['Nessun endpoint o storage.', 'Stati UI espliciti nelle props.', 'Facile da renderizzare in test e Storybook.'],
+  notes: 'Presentational non significa componente privo di logica. Può contenere branching di UI, mapping e gestione degli eventi. Non deve però conoscere dettagli che appartengono alla rete o al router se non sono parte del suo scopo. Le props rendono visibili gli stati da verificare: loading, error, empty e success.'
+});
+
+codeSlide({
+  title: 'Il custom hook isola la logica della feature', eyebrow: 'Container logic', lang: 'TS', filename: 'hooks/useTickets.ts',
+  code: `export function useTickets(query = '') {\n  const [tickets, setTickets] = useState<Ticket[]>([]);\n  const [status, setStatus] = useState<'idle' | 'loading' | 'error'>('idle');\n  const [error, setError] = useState<Error | null>(null);\n\n  // Il lifecycle asincrono verrà completato nella sezione Effect.\n  useEffect(() => {\n    setStatus('loading');\n    fetchTickets(query)\n      .then(data => { setTickets(data); setStatus('idle'); })\n      .catch(reason => { setError(reason); setStatus('error'); });\n  }, [query]);\n\n  return { tickets, status, error };\n}`,
+  bullets: ['Il nome racconta il dominio.', 'Lo stato asincrono resta vicino al fetch.', 'Il componente usa un contratto piccolo.'],
+  notes: 'Questo è un primo passo volutamente incompleto: più avanti aggiungeremo AbortController e cleanup. Serve a mostrare il confine. Un custom hook non è soltanto un modo per ridurre righe. Deve rappresentare una responsabilità o un comportamento riusabile, come il ciclo di vita dei ticket.'
+});
+
+codeSlide({
+  title: 'La page orchestra feature, layout e view', eyebrow: 'Composition root locale', lang: 'TSX', filename: 'TicketsPage.tsx',
+  code: `export function TicketsPage() {\n  const [query, setQuery] = useState('');\n  const [selectedId, setSelectedId] = useState<string | null>(null);\n  const tickets = useTickets(query);\n\n  return (\n    <DashboardLayout sidebar={<TicketFilters />}>\n      <PageHeader title='Tickets' />\n      <SearchField value={query} onChange={setQuery} />\n      <TicketList\n        tickets={tickets.data}\n        isLoading={tickets.isLoading}\n        error={tickets.error}\n        onSelect={setSelectedId}\n      />\n      <TicketDetails ticketId={selectedId} />\n    </DashboardLayout>\n  );\n}`,
+  bullets: ['La page possiede il caso d’uso.', 'Il JSX legge come la schermata.', 'Ogni figlio ha un motivo diverso per cambiare.'],
+  notes: 'La page è un buon punto di orchestrazione perché conosce il caso d’uso. Non deve diventare un contenitore globale di ogni stato. query e selectedId appartengono a questa schermata. Il layout conosce le regioni, TicketList la lista, TicketDetails il dettaglio e useTickets il ciclo dei dati.'
+});
+
+sectionSlide(2, 'Component Composition', 'Un guscio stabile accoglie contenuti che cambiano.', 'La composition sposta le decisioni nel punto che possiede l’informazione. Mostrare prima l’esplosione delle prop booleane e poi il layout che riceve children o slot nominati.');
+
+codeSlide({
+  title: 'Prima: le prop booleane moltiplicano combinazioni', eyebrow: 'Code smell', lang: 'TSX', filename: 'Dashboard.tsx',
+  code: `type Props = {\n  mode: 'tickets' | 'reports';\n  showFilters?: boolean;\n  compact?: boolean;\n  showFooter?: boolean;\n};\n\nexport function Dashboard(props: Props) {\n  return (\n    <div className={props.compact ? 'compact' : 'wide'}>\n      {props.mode === 'tickets' && <TicketList 
