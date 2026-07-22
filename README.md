@@ -190,7 +190,8 @@ I partecipanti costruiscono una mini applicazione aziendale lungo tutto il corso
 - ottimizzazioni di rendering e caricamento;
 - test su hook, componenti e flussi principali.
 
-La traccia, lo starter e la soluzione vivono nella cartella [`progetto/`](progetto/).
+Lo starter, la soluzione del Modulo 1 e la relativa guida vivono nella cartella
+[`progetto/`](progetto/README.md).
 
 <a id="struttura"></a>
 
@@ -198,25 +199,22 @@ La traccia, lo starter e la soluzione vivono nella cartella [`progetto/`](proget
 
 ```text
 .
+├── docs/
+│   └── programma.md
 ├── materiali/
 │   ├── slides/
-│   │   ├── 01-architettura-react/
-│   │   ├── 02-state-management/
-│   │   ├── 03-performance-rendering/
-│   │   ├── 04-form-ux-accessibilita/
-│   │   └── 05-testing-rilascio/
+│   │   └── 01-architettura-react/
 │   └── pdf/
-├── esercizi/
-│   ├── 01-architettura-react/
-│   ├── 02-state-management/
-│   ├── 03-performance-rendering/
-│   ├── 04-form-ux-accessibilita/
-│   └── 05-testing-rilascio/
+│       └── programma-react-aziendale-20h.pdf
 ├── progetto/
 │   ├── starter/
+│   │   └── operations-dashboard/
 │   ├── soluzione/
+│   │   └── operations-dashboard/
 │   └── documentazione/
-└── docs/
+│       ├── brief-modulo-1.md
+│       └── checklist-architetturale.md
+└── README.md
 ```
 
 Ogni cartella di modulo mantiene la stessa numerazione per collegare slide, esercizi e avanzamento del progetto.
@@ -239,8 +237,11 @@ Ogni incontro segue questo ciclo:
 
 - [Programma completo in Markdown](docs/programma.md)
 - [Programma originale in PDF](materiali/pdf/programma-react-aziendale-20h.pdf)
-- [Guida agli esercizi](esercizi/README.md)
-- [Guida al project work](progetto/README.md)
+- [Dashboard guidata del Modulo 1](progetto/README.md)
+- [Brief con 10 TODO cumulativi](progetto/documentazione/brief-modulo-1.md)
+- [Checklist architetturale](progetto/documentazione/checklist-architetturale.md)
+- [Istruzioni dello starter](progetto/starter/operations-dashboard/README.md)
+- [Soluzione commentata](progetto/soluzione/operations-dashboard/README.md)
 
 <p align="center">
   <img src="https://capsule-render.vercel.app/api?type=waving&height=120&section=footer&color=0:0B2545,100:2563EB" width="100%" alt="Separatore grafico finale" />
