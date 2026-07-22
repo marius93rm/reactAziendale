@@ -10,3 +10,6 @@
 /GEMINI.md
 /docs/ai-workflow.md
 /.github/copilot-instructions.md
+
+# macOS Finder metadata
+.DS_Store
