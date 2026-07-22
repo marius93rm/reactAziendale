@@ -1,0 +1,34 @@
+/** Il layout controlla soltanto colonne, spazi e contenitori. */
+@use '../../../../styles/tokens' as t;
+
+.ticket-dashboard-layout {
+  display: grid;
+  grid-template-columns: minmax(15rem, 18rem) minmax(0, 1fr);
+  gap: t.$space-6;
+  align-items: start;
+
+  &__sidebar,
+  &__content,
+  &__detail {
+    min-width: 0;
+  }
+}
+
+@media (min-width: 78rem) {
+  .ticket-dashboard-layout:has(.ticket-dashboard-layout__detail) {
+    grid-template-columns: minmax(14rem, 17rem) minmax(0, 1fr) minmax(18rem, 22rem);
+  }
+}
+
+@media (min-width: 48.0625rem) and (max-width: 77.999rem) {
+  .ticket-dashboard-layout__detail {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 48rem) {
+  .ticket-dashboard-layout {
+    grid-template-columns: 1fr;
+    gap: t.$space-4;
+  }
+}

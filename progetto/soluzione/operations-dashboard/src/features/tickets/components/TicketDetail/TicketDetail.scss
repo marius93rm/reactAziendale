@@ -1,0 +1,71 @@
+/** Il pannello organizza il contenuto del ticket selezionato. */
+@use '../../../../styles/tokens' as t;
+
+.ticket-detail {
+  border: 1px solid t.$color-slate-200;
+  border-radius: t.$radius-panel;
+  padding: t.$space-6;
+  background: t.$color-white;
+  box-shadow: t.$shadow-panel;
+
+  header span {
+    color: t.$color-blue-700;
+    font-size: 0.75rem;
+    font-weight: 800;
+  }
+
+  h2 {
+    margin: t.$space-2 0;
+    color: t.$color-navy-950;
+    font-size: 1.25rem;
+    line-height: 1.25;
+  }
+
+  header p,
+  &__description {
+    color: t.$color-slate-600;
+  }
+
+  header p {
+    margin: 0;
+  }
+
+  &__description {
+    margin: t.$space-6 0;
+  }
+
+  dl,
+  dl div {
+    display: grid;
+    gap: t.$space-2;
+  }
+
+  dl {
+    margin: 0;
+    gap: t.$space-4;
+  }
+
+  dl div {
+    border-top: 1px solid t.$color-slate-200;
+    padding-top: t.$space-4;
+  }
+
+  dt {
+    color: t.$color-slate-600;
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+
+  dd {
+    display: flex;
+    align-items: center;
+    gap: t.$space-2;
+    margin: 0;
+    color: t.$color-navy-950;
+    font-weight: 700;
+  }
+
+  &--empty {
+    text-align: center;
+  }
+}

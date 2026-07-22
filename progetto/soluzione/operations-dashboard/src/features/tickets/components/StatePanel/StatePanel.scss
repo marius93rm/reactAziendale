@@ -1,0 +1,33 @@
+/** Il pannello mantiene dimensioni stabili tra loading, errore ed empty state. */
+@use '../../../../styles/tokens' as t;
+
+.state-panel {
+  display: grid;
+  min-height: 20rem;
+  place-items: center;
+  align-content: center;
+  gap: t.$space-3;
+  padding: t.$space-8;
+  text-align: center;
+
+  h3,
+  p {
+    margin: 0;
+  }
+
+  p,
+  > span {
+    color: t.$color-slate-600;
+  }
+
+  > .button {
+    margin-top: t.$space-2;
+  }
+
+  &__skeleton {
+    width: min(100%, 28rem);
+    height: 4rem;
+    border-radius: t.$radius-control;
+    background: t.$color-slate-100;
+  }
+}

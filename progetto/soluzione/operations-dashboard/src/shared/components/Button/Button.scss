@@ -1,0 +1,35 @@
+/** Il controllo condiviso applica contrasto, focus e feedback tattile. */
+@use '../../../styles/tokens' as t;
+
+.button {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  gap: t.$space-2;
+  border: 1px solid t.$color-blue-600;
+  border-radius: t.$radius-control;
+  padding-inline: t.$space-4;
+  font-weight: 800;
+  white-space: nowrap;
+
+  &[data-variant='primary'] {
+    background: t.$color-blue-600;
+    color: t.$color-white;
+  }
+
+  &[data-variant='secondary'] {
+    background: t.$color-white;
+    color: t.$color-blue-700;
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(1px);
+  }
+
+  &:disabled {
+    border-color: t.$color-slate-200;
+    color: t.$color-slate-500;
+    cursor: not-allowed;
+  }
+}

@@ -1,0 +1,85 @@
+/** I controlli mantengono label visibili, focus e contrasto. */
+@use '../../../../styles/tokens' as t;
+
+.ticket-filters {
+  display: grid;
+  gap: t.$space-5;
+  border: 1px solid t.$color-slate-200;
+  border-radius: t.$radius-panel;
+  padding: t.$space-5;
+  background: t.$color-white;
+  box-shadow: t.$shadow-panel;
+
+  &__title {
+    display: flex;
+    align-items: center;
+    gap: t.$space-2;
+    color: t.$color-navy-900;
+  }
+
+  &__title h2,
+  &__result {
+    margin: 0;
+  }
+
+  &__title h2 {
+    font-size: 1rem;
+  }
+
+  &__field {
+    display: grid;
+    gap: t.$space-2;
+    color: t.$color-slate-700;
+    font-size: 0.8125rem;
+    font-weight: 700;
+  }
+
+  &__field select,
+  &__search {
+    min-height: 2.75rem;
+    border: 1px solid t.$color-slate-300;
+    border-radius: t.$radius-control;
+    background: t.$color-white;
+  }
+
+  &__field select {
+    width: 100%;
+    padding-inline: t.$space-3;
+  }
+
+  &__search {
+    display: flex;
+    align-items: center;
+    gap: t.$space-2;
+    padding-inline: t.$space-3;
+  }
+
+  &__search:focus-within {
+    outline: 0.1875rem solid t.$color-blue-600;
+    outline-offset: 0.1875rem;
+  }
+
+  &__search input {
+    width: 100%;
+    min-width: 0;
+    border: 0;
+    outline: 0;
+  }
+
+  > .button {
+    width: 100%;
+  }
+
+  &__result {
+    border-top: 1px solid t.$color-slate-200;
+    padding-top: t.$space-4;
+    color: t.$color-slate-600;
+    font-size: 0.75rem;
+  }
+
+  &__result strong {
+    margin-right: t.$space-1;
+    color: t.$color-navy-900;
+    font-size: 1.5rem;
+  }
+}
