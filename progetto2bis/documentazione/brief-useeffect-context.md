@@ -38,9 +38,9 @@ Open-Meteo espone il servizio Forecast tramite HTTPS. Per questo laboratorio
 non servono account o chiavi. L'interfaccia deve mantenere visibile
 l'attribuzione a [Open-Meteo](https://open-meteo.com/).
 
-Il tier gratuito non garantisce disponibilità. Lo starter e i test non usano
-la rete. La soluzione mostra uno stato di errore con retry quando il servizio
-non risponde.
+Il tier gratuito non garantisce disponibilità. Lo starter iniziale non usa la
+rete. I test iniettano dipendenze controllate e non usano la rete reale. La
+soluzione mostra uno stato di errore con retry quando il servizio non risponde.
 
 ## Prerequisiti
 
@@ -69,6 +69,9 @@ npm --version
 
 Lo starter deve mostrare quattro sedi e il messaggio che invita a completare i
 TODO. Non deve mostrare previsioni e non deve chiamare `fetch`.
+
+La suite inietta una `WeatherApi` controllata in `App`. Non usa la rete reale e
+continua a verificare la shell quando il TODO 08 attiva la richiesta.
 
 Chiudi il controllo iniziale con:
 
@@ -1621,7 +1624,8 @@ flusso integrato. La mappa dello studente contiene ancora righe incomplete.
 5. Cambia sede prima della risoluzione e controlla `signal.aborted`.
 6. Rifiuta con `AbortError` e controlla l'assenza dello stato error.
 7. Chiama retry e refresh e conta le nuove richieste.
-8. Nello starter verifica che il primo render non chiami `fetch`.
+8. Nello starter inietta una `WeatherApi` controllata e verifica che la suite
+   non chiami `fetch`.
 9. Completa mappa e schede degli Effect.
 10. Esegui check, controllo link e ricerca dei trattini Unicode vietati.
 
@@ -1767,16 +1771,21 @@ describe('useForecast', () => {
 });
 ```
 
-Controllo dello starter senza rete:
+Controllo dello starter senza rete reale:
 
 ```tsx
 import { render } from '@testing-library/react';
 import { expect, it, vi } from 'vitest';
 import { App } from './App';
+import type { WeatherApi } from './weather/services/WeatherApi';
 
-it('non chiama fetch al primo avvio dello starter', () => {
+const pendingApi: WeatherApi = {
+  getForecast: () => new Promise<never>(() => undefined),
+};
+
+it('non usa la rete reale durante i test', () => {
   const fetchSpy = vi.spyOn(globalThis, 'fetch');
-  render(<App />);
+  render(<App api={pendingApi} />);
   expect(fetchSpy).not.toHaveBeenCalled();
   fetchSpy.mockRestore();
 });
@@ -1823,7 +1832,7 @@ Apri i link relativi del README e del brief. Confronta la tua mappa con
 ### Checkpoint
 
 - [ ] Starter e soluzione superano `npm run check`.
-- [ ] Lo starter non chiama la rete.
+- [ ] La suite dello starter non chiama la rete reale.
 - [ ] I test coprono Context, adapter, hook e flusso integrato.
 - [ ] Cleanup, risposta obsoleta e `AbortError` hanno un test.
 - [ ] Retry e refresh generano una nuova richiesta.
