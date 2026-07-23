@@ -192,7 +192,9 @@ I partecipanti costruiscono una mini applicazione aziendale lungo tutto il corso
 
 Lo starter, la soluzione e la guida del Modulo 1 vivono in
 [`progetto/`](progetto/README.md). Il laboratorio sullo state management del
-Modulo 2 vive in [`progetto2/`](progetto2/README.md).
+Modulo 2 vive in [`progetto2/`](progetto2/README.md). Il laboratorio
+complementare su `useEffect`, Context e API pubbliche vive in
+[`progetto2bis/`](progetto2bis/README.md).
 
 <a id="struttura"></a>
 
@@ -225,6 +227,15 @@ Modulo 2 vive in [`progetto2/`](progetto2/README.md).
 │       ├── brief-modulo-2.md
 │       ├── mappa-decisionale-stato-studente.md
 │       └── mappa-decisionale-stato.md
+├── progetto2bis/
+│   ├── starter/
+│   │   └── meteo-sedi/
+│   ├── soluzione/
+│   │   └── meteo-sedi/
+│   └── documentazione/
+│       ├── brief-useeffect-context.md
+│       ├── mappa-effect-context-studente.md
+│       └── mappa-effect-context.md
 └── README.md
 ```
 
@@ -260,6 +271,12 @@ Ogni incontro segue questo ciclo:
 - [Mappa decisionale dello stato](progetto2/documentazione/mappa-decisionale-stato.md)
 - [Starter Material UI del Modulo 2](progetto2/starter/widget-dashboard/README.md)
 - [Soluzione del Modulo 2](progetto2/soluzione/widget-dashboard/README.md)
+- [Meteo Sedi, laboratorio complementare del Modulo 2](progetto2bis/README.md)
+- [Brief guidato su useEffect e Context](progetto2bis/documentazione/brief-useeffect-context.md)
+- [Mappa Effect e Context da compilare](progetto2bis/documentazione/mappa-effect-context-studente.md)
+- [Mappa Effect e Context risolta](progetto2bis/documentazione/mappa-effect-context.md)
+- [Starter Meteo Sedi](progetto2bis/starter/meteo-sedi/README.md)
+- [Soluzione Meteo Sedi](progetto2bis/soluzione/meteo-sedi/README.md)
 
 <p align="center">
   <img src="https://capsule-render.vercel.app/api?type=waving&height=120&section=footer&color=0:0B2545,100:2563EB" width="100%" alt="Separatore grafico finale" />
