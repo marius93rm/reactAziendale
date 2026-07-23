@@ -74,7 +74,7 @@ Il corso comprende cinque moduli da quattro ore. Ogni modulo produce un risultat
 
 ### Modulo 1: Architettura React moderna
 
-**Durata:** 4 ore  
+**Durata:** 4 ore
 **Focus:** component design, custom hook e struttura del progetto
 
 Contenuti:
@@ -95,7 +95,7 @@ Contenuti:
 
 ### Modulo 2: State management avanzato
 
-**Durata:** 4 ore  
+**Durata:** 4 ore
 **Focus:** client state, server state, cache e reducer
 
 Contenuti:
@@ -116,7 +116,7 @@ Contenuti:
 
 ### Modulo 3: Performance, rendering e scalabilità
 
-**Durata:** 4 ore  
+**Durata:** 4 ore
 **Focus:** profiling, memoizzazione e code splitting
 
 Contenuti:
@@ -138,7 +138,7 @@ Contenuti:
 
 ### Modulo 4: Form enterprise, UX e accessibilità
 
-**Durata:** 4 ore  
+**Durata:** 4 ore
 **Focus:** form complessi, validazione, accessibilità e ruoli
 
 Contenuti:
@@ -159,7 +159,7 @@ Contenuti:
 
 ### Modulo 5: Testing, qualità e rilascio
 
-**Durata:** 4 ore  
+**Durata:** 4 ore
 **Focus:** test, code review, build e project work
 
 Contenuti:
@@ -190,8 +190,9 @@ I partecipanti costruiscono una mini applicazione aziendale lungo tutto il corso
 - ottimizzazioni di rendering e caricamento;
 - test su hook, componenti e flussi principali.
 
-Lo starter, la soluzione del Modulo 1 e la relativa guida vivono nella cartella
-[`progetto/`](progetto/README.md).
+Lo starter, la soluzione e la guida del Modulo 1 vivono in
+[`progetto/`](progetto/README.md). Il laboratorio sullo state management del
+Modulo 2 vive in [`progetto2/`](progetto2/README.md).
 
 <a id="struttura"></a>
 
@@ -203,7 +204,8 @@ Lo starter, la soluzione del Modulo 1 e la relativa guida vivono nella cartella
 │   └── programma.md
 ├── materiali/
 │   ├── slides/
-│   │   └── 01-architettura-react/
+│   │   ├── 01-architettura-react/
+│   │   └── 02-state-management-avanzato/
 │   └── pdf/
 │       └── programma-react-aziendale-20h.pdf
 ├── progetto/
@@ -214,10 +216,19 @@ Lo starter, la soluzione del Modulo 1 e la relativa guida vivono nella cartella
 │   └── documentazione/
 │       ├── brief-modulo-1.md
 │       └── checklist-architetturale.md
+├── progetto2/
+│   ├── starter/
+│   │   └── widget-dashboard/
+│   ├── soluzione/
+│   │   └── widget-dashboard/
+│   └── documentazione/
+│       ├── brief-modulo-2.md
+│       ├── mappa-decisionale-stato-studente.md
+│       └── mappa-decisionale-stato.md
 └── README.md
 ```
 
-Ogni cartella di modulo mantiene la stessa numerazione per collegare slide, esercizi e avanzamento del progetto.
+Slide ed esercizi usano la numerazione `01`-`05`. README e brief collegano ogni laboratorio al modulo corrispondente.
 
 <a id="metodo"></a>
 
@@ -242,6 +253,13 @@ Ogni incontro segue questo ciclo:
 - [Checklist architetturale](progetto/documentazione/checklist-architetturale.md)
 - [Istruzioni dello starter](progetto/starter/operations-dashboard/README.md)
 - [Soluzione commentata](progetto/soluzione/operations-dashboard/README.md)
+- [Lezione del Modulo 2 sullo state management](materiali/slides/02-state-management-avanzato/secondaLezione.md)
+- [Widget Dashboard del Modulo 2](progetto2/README.md)
+- [Brief sullo state management](progetto2/documentazione/brief-modulo-2.md)
+- [Mappa decisionale da compilare](progetto2/documentazione/mappa-decisionale-stato-studente.md)
+- [Mappa decisionale dello stato](progetto2/documentazione/mappa-decisionale-stato.md)
+- [Starter Material UI del Modulo 2](progetto2/starter/widget-dashboard/README.md)
+- [Soluzione del Modulo 2](progetto2/soluzione/widget-dashboard/README.md)
 
 <p align="center">
   <img src="https://capsule-render.vercel.app/api?type=waving&height=120&section=footer&color=0:0B2545,100:2563EB" width="100%" alt="Separatore grafico finale" />
